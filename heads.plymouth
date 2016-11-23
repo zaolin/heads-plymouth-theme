@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Heads
+Description=A plymouth theme for Heads UI
+ModuleName=script
+
+[script]
+ImageDir=/lib/plymouth/themes/heads
+ScriptFile=/lib/plymouth/themes/heads/heads.script
