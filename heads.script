@@ -15,9 +15,7 @@ global.background;
 global.qrcode;
 global.scaling_factor;
 global.message;
-global.text.color.red = 1;
-global.text.color.green = 1;
-global.text.color.blue = 1;
+global.input;
 
 fun init () {
   /* Multi Display Support */
@@ -64,16 +62,29 @@ fun dialog_setup () {
 fun set_message (text) {
   local.image;
   local.org_image;
-  org_image = Image.Text(text, text.color.red, text.color.green, text.color.blue);
+  org_image = Image.Text(text, 1, 1, 1);
   image = org_image.Scale(scaling_factor * org_image.GetWidth(),
                           scaling_factor * org_image.GetHeight());
 
-  message = Sprite();
-  message.SetImage(image);
+  message = Sprite(image);
   message.SetOpacity(1);
   message.SetPosition(Window.GetWidth() / 2 - image.GetWidth() / 2,
-                      qrcode.image.GetY() + qrcode.image.GetHeight() +
+                      qrcode.sprite.GetY() + qrcode.image.GetHeight() +
                       image.GetHeight(), 1);
+}
+
+fun set_input (text) {
+  local.image;
+  local.org_image;
+  org_image = Image.Text(text, 1, 0, 0);
+  image = org_image.Scale(scaling_factor * org_image.GetWidth(),
+                          scaling_factor * org_image.GetHeight());
+
+  input = Sprite(image);
+  input.SetOpacity(1);
+  input.SetPosition(Window.GetWidth() / 2 - image.GetWidth() / 2,
+                      qrcode.sprite.GetY() + qrcode.image.GetHeight() +
+                      2 * image.GetHeight(), 1);
 }
 
 fun display_normal_callback () {
@@ -84,11 +95,19 @@ fun display_normal_callback () {
 fun display_password_callback (prompt, bullets) {
   status = "password";
   qrcode.sprite.SetOpacity(0);
+  set_message(prompt);
+  local.entry_text = "";
+  for(index = 0; index < bullets; index++) {
+    entry_text = entry_text + "*";
+  }
+  set_input(entry_text);
 }
 
 fun display_question_callback (prompt, entry_text) {
   status = "question";
   qrcode.sprite.SetOpacity(1);
+  set_message(prompt);
+  set_input(entry_text);
 }
 
 fun display_message_callback (text) {
