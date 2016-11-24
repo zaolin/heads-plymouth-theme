@@ -4,5 +4,5 @@ Description=A plymouth theme for Heads UI
 ModuleName=script
 
 [script]
-ImageDir=/lib/plymouth/themes/heads
-ScriptFile=/lib/plymouth/themes/heads/heads.script
+ImageDir=/usr/share/plymouth/themes/heads
+ScriptFile=/usr/share/plymouth/themes/heads/heads.script

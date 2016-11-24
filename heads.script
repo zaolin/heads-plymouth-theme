@@ -10,12 +10,98 @@ Plymouth.SetDisplayNormalFunction: the callback function is called when the disp
 Plymouth.SetMessageFunction: the callback function is called when new message should be displayed. First arg is message to display. e.g.
 */
 
-Window.SetBackgroundTopColor(0.125, 0.125, 0.125);
-Window.SetBackgroundBottomColor(0.125, 0.125, 0.125);
+global.status = "normal";
+global.background;
+global.qrcode;
+global.scaling_factor;
+global.message;
+global.text.color.red = 1;
+global.text.color.green = 1;
+global.text.color.blue = 1;
 
+fun init () {
+  /* Multi Display Support */
+  Window.GetMaxWidth = fun () {
+    i = 0;
+	  width = 0;
+	  while (Window.GetWidth(i)) {
+		  width = Math.Max(width, Window.GetWidth(i));
+		  i++;
+	  }
+	  return width;
+  };
 
-fun dialog_setup() {
+  Window.GetMaxHeight = fun () {
+  	i = 0;
+	  height = 0;
+	  while (Window.GetHeight(i)) {
+		  height = Math.Max(height, Window.GetHeight(i));
+		  i++;
+	  }
+	  return height;
+  };
 }
 
+fun dialog_setup () {
+  scaling_factor = Window.GetMaxHeight() / 768;
+
+  background.image = Image("background.png").Scale(Window.GetMaxWidth(),
+                                                   Window.GetMaxHeight());
+  background.sprite = SpriteNew();
+  background.sprite.SetImage(background.image);
+  background.sprite.SetPosition(Window.GetX(), Window.GetY(), -1);
+
+  qrcode.org_image = Image("qrcode.png");
+  qrcode.image = qrcode.org_image.Scale(scaling_factor * qrcode.org_image.GetWidth(),
+                                        scaling_factor * qrcode.org_image.GetHeight());
+  qrcode.sprite = Sprite(qrcode.image);
+  qrcode.sprite.SetPosition(Window.GetWidth() / 2 - qrcode.image.GetWidth() / 2,
+                            Window.GetHeight() / 2 - qrcode.image.GetHeight() / 2,
+                            1);
+  qrcode.sprite.SetOpacity(0);
+}
+
+fun set_message (text) {
+  local.image;
+  local.org_image;
+  org_image = Image.Text(text, text.color.red, text.color.green, text.color.blue);
+  image = org_image.Scale(scaling_factor * org_image.GetWidth(),
+                          scaling_factor * org_image.GetHeight());
+
+  message = Sprite();
+  message.SetImage(image);
+  message.SetOpacity(1);
+  message.SetPosition(Window.GetWidth() / 2 - image.GetWidth() / 2,
+                      qrcode.image.GetY() + qrcode.image.GetHeight() +
+                      image.GetHeight(), 1);
+}
+
+fun display_normal_callback () {
+  status = "normal";
+  qrcode.sprite.SetOpacity(0);
+}
+
+fun display_password_callback (prompt, bullets) {
+  status = "password";
+  qrcode.sprite.SetOpacity(0);
+}
+
+fun display_question_callback (prompt, entry_text) {
+  status = "question";
+  qrcode.sprite.SetOpacity(1);
+}
+
+fun display_message_callback (text) {
+  status = "message";
+  qrcode.sprite.SetOpacity(0);
+  set_message(text);
+}
+
+init();
 /* preload all images */
 dialog_setup();
+
+Plymouth.SetDisplayNormalFunction(display_normal_callback);
+Plymouth.SetDisplayPasswordFunction(display_password_callback);
+Plymouth.SetDisplayQuestionFunction(display_question_callback);
+Plymouth.SetMessageFunction(display_message_callback);
