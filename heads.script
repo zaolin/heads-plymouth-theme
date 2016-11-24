@@ -1,0 +1,21 @@
+/*
+Plymouth.SetRefreshFunction: function to be called up to 50 times every second
+Plymouth.SetBootProgressFunction: the callback function is called with two numbers, time spent booting so far and the progress (between 0 and 1)
+Plymouth.SetRootMountedFunction: the callback function is called when a new root is mounted
+Plymouth.SetKeyboardInputFunction: the callback function is called with a string containing a new character entered on the keyboard
+Plymouth.SetUpdateStatusFunction: the callback function is called with the new boot status string
+Plymouth.SetDisplayPasswordFunction: the callback function is called when the display should display a password dialogue. First arg is prompt string, the second is the number of bullets.
+Plymouth.SetDisplayQuestionFunction: the callback function is called when the display should display a question dialogue. First arg is prompt string, the second is the entry contents.
+Plymouth.SetDisplayNormalFunction: the callback function is called when the display should return to normal
+Plymouth.SetMessageFunction: the callback function is called when new message should be displayed. First arg is message to display. e.g.
+*/
+
+Window.SetBackgroundTopColor(0.125, 0.125, 0.125);
+Window.SetBackgroundBottomColor(0.125, 0.125, 0.125);
+
+
+fun dialog_setup() {
+}
+
+/* preload all images */
+dialog_setup();
